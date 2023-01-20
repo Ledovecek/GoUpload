@@ -27,11 +27,6 @@ func main() {
 			if IsAllowed(uploadedFile) {
 				c.String(http.StatusOK, fmt.Sprintf("'%s' uploaded!", file.Filename))
 			} else {
-				err := os.Remove("download/" + file.Filename)
-				if err != nil {
-					panic(err)
-					return
-				}
 				c.String(http.StatusNotAcceptable, "This file format is not allowed to upload")
 			}
 		} else {
