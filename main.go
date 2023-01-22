@@ -3,16 +3,14 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	uuid "github.com/satori/go.uuid"
 	"net/http"
 	"os"
+	"path/filepath"
 )
 
 func main() {
 	router := gin.Default()
-	dirEntry, _ := os.ReadDir("download")
-	if dirEntry == nil {
-		os.Mkdir("download", 0755)
-	}
 	router.Static("/download", "download")
 	router.POST("/", func(c *gin.Context) {
 		if c.Request.ContentLength <= AllowedFileSize {
@@ -23,9 +21,13 @@ func main() {
 				panic(err)
 				return
 			}
+			fmt.Println(file.Filename)
 			uploadedFile := New(readFile, file.Size)
+			fileExtension := filepath.Ext("download/" + file.Filename)
 			if IsAllowed(uploadedFile) {
-				c.String(http.StatusOK, fmt.Sprintf("'%s' uploaded!", file.Filename))
+				generatedUuid := uuid.NewV4().String()
+				os.Rename("download/"+file.Filename, "download/"+generatedUuid+filepath.Ext("download/"+fileExtension))
+				c.String(http.StatusOK, fmt.Sprintf("Link: http://localhost:8080/download/%s"+fileExtension, generatedUuid))
 			} else {
 				c.String(http.StatusNotAcceptable, "This file format is not allowed to upload")
 			}
