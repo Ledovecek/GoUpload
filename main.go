@@ -21,7 +21,6 @@ func main() {
 				panic(err)
 				return
 			}
-			fmt.Println(file.Filename)
 			uploadedFile := New(readFile, file.Size)
 			fileExtension := filepath.Ext("download/" + file.Filename)
 			if IsAllowed(uploadedFile) {
