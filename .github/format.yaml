@@ -1,0 +1,15 @@
+name: formatter
+on: [pull_request, push]
+
+jobs:
+  build:
+    name: Format Go File
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+      with:
+        fetch-depth: 0
+    - name: format
+      uses: sladyn98/auto-go-format@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
