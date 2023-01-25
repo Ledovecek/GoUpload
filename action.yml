@@ -1,2 +1,0 @@
-- name: Build Go from source
-  uses: iwdgo/gotip-build@v0.1.0
