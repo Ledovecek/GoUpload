@@ -45,8 +45,8 @@ func main() {
 	router.POST(SLASH, func(c *gin.Context) {
 		if c.Request.ContentLength <= AllowedFileSize {
 			file, err := c.FormFile("file")
-			err = c.SaveUploadedFile(file, "download/"+file.Filename)
-			readFile, err := os.ReadFile("download/" + file.Filename)
+			err = c.SaveUploadedFile(file, DownloadsDirectory+SLASH+file.Filename)
+			readFile, err := os.ReadFile(DownloadsDirectory + SLASH + file.Filename)
 			if err != nil {
 				panic(err)
 				return
@@ -55,7 +55,7 @@ func main() {
 			fileExtension := filepath.Ext(DownloadsDirectory + SLASH + file.Filename)
 			if IsAllowed(uploadedFile) {
 				generatedUuid := uuid.NewV4().String()
-				os.Rename("download/"+file.Filename, "download/"+generatedUuid+filepath.Ext(DownloadsDirectory+SLASH+fileExtension))
+				os.Rename(DownloadsDirectory+SLASH+file.Filename, DownloadsDirectory+SLASH+generatedUuid+filepath.Ext(DownloadsDirectory+SLASH+fileExtension))
 				c.String(http.StatusOK, fmt.Sprintf(DownloadLink+fileExtension, generatedUuid))
 			} else {
 				c.String(http.StatusNotAcceptable, IllegalFormat)
